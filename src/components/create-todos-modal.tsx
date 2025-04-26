@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,9 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createTodo } from "@/lib/supabase/queries/create-todo";
+import { toast } from "sonner";
 
 type CreateTodoModalProps = {
-  onTodoCreated: (todo: Todos) => void;
+  onTodoCreated: () => void;
 };
 
 export default function CreateTodoModal({
@@ -24,10 +23,11 @@ export default function CreateTodoModal({
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleCreateTodo() {
     if (!newTitle.trim()) {
-      alert("Title is required!");
+      setError("Title is required");
       return;
     }
 
@@ -39,7 +39,8 @@ export default function CreateTodoModal({
     });
 
     if (newTodo) {
-      onTodoCreated(newTodo);
+      toast.success("Todo created successfully");
+      onTodoCreated();
       setOpen(false);
       setNewTitle("");
       setNewDescription("");
@@ -58,12 +59,16 @@ export default function CreateTodoModal({
             <DialogTitle>Create a new Todo</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <Input
-              placeholder="Title"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              disabled={loading}
-            />
+            <div className="space-y-1">
+              <Input
+                placeholder="Title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                disabled={loading}
+                className={error ? "border-red-500" : ""}
+              />
+              {error && <p className="text-sm text-red-500">{error}</p>}
+            </div>
             <Textarea
               placeholder="Description"
               value={newDescription}

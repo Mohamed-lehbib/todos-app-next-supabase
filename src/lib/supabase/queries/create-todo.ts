@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { supabase } from "../client";
 
 export async function createTodo({ title, description }: Todos) {
@@ -9,6 +10,7 @@ export async function createTodo({ title, description }: Todos) {
 
   if (error) {
     console.error("Error creating todo:", error.message);
+    toast.error("Error creating todo");
     return null;
   }
 

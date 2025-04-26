@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { supabase } from "../client";
 
 export const deleteTodo = async (id: number) => {
@@ -5,6 +6,7 @@ export const deleteTodo = async (id: number) => {
 
   if (error) {
     console.error("Error deleting todo:", error.message);
+    toast.error("Error deleting todo. Please try again later.");
     return false;
   }
   console.log("Todo deleted successfully:", data);
